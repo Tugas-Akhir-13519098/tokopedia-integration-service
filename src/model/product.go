@@ -9,20 +9,24 @@ const (
 )
 
 type ProductMessage struct {
-	Method      Method
-	ID          string
-	Name        string
-	Price       int
-	Weight      float32
-	Stock       int
-	Image       string
-	Description string
-	TokopediaID int
-	ShopeeID    int
+	Method             Method
+	ID                 string
+	Name               string
+	Price              int
+	Weight             float32
+	Stock              int
+	Image              string
+	Description        string
+	TokopediaProductID int
+	ShopeeProductID    int
 }
 
 type Picture struct {
 	FilePath string `json:"file_path" binding:"required"`
+}
+
+type CreateRequest struct {
+	Products []CreateProductRequest `json:"products" binding:"required"`
 }
 
 type CreateProductRequest struct {
@@ -38,6 +42,10 @@ type CreateProductRequest struct {
 	Stock         int       `json:"stock" binding:"required"`
 	Pictures      []Picture `json:"pictures" binding:"required"`
 	Description   string    `json:"description" binding:"required"`
+}
+
+type UpdateRequest struct {
+	Products []UpdateProductRequest `json:"products" binding:"required"`
 }
 
 type UpdateProductRequest struct {
@@ -65,9 +73,9 @@ type ProductResponseHeader struct {
 }
 
 type ProductResponseData struct {
-	TotalData       int                   `json:"total_data" binding:"required"`
-	SucceessData    int                   `json:"succeed_rows" binding:"required"`
-	FailData        int                   `json:"failed_rows" binding:"required"`
+	TotalData       int                   `json:"total_data"`
+	SuccessData     int                   `json:"success_data"`
+	FailData        int                   `json:"fail_data"`
 	SuccessRowsData []SuccessResponseData `json:"success_rows_data"`
 	FailedRowsData  []FailedResponseData  `json:"failed_rows_data"`
 }

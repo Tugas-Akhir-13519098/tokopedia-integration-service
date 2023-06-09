@@ -22,7 +22,10 @@ func ConvertProductToCreateProductRequest(pm *model.ProductMessage) *bytes.Buffe
 		Pictures:      []model.Picture{{FilePath: pm.Image}},
 		Description:   pm.Description,
 	}
-	body, _ := json.Marshal(product)
+	request := model.CreateRequest{
+		Products: []model.CreateProductRequest{product},
+	}
+	body, _ := json.Marshal(request)
 	responseBody := bytes.NewBuffer(body)
 
 	return responseBody
@@ -30,7 +33,7 @@ func ConvertProductToCreateProductRequest(pm *model.ProductMessage) *bytes.Buffe
 
 func ConvertProductToUpdateProductRequest(pm *model.ProductMessage) *bytes.Buffer {
 	product := model.UpdateProductRequest{
-		ID:          pm.TokopediaID,
+		ID:          pm.TokopediaProductID,
 		Name:        pm.Name,
 		Price:       pm.Price,
 		Weight:      pm.Weight,
@@ -38,7 +41,10 @@ func ConvertProductToUpdateProductRequest(pm *model.ProductMessage) *bytes.Buffe
 		Pictures:    []model.Picture{{FilePath: pm.Image}},
 		Description: pm.Description,
 	}
-	body, _ := json.Marshal(product)
+	request := model.UpdateRequest{
+		Products: []model.UpdateProductRequest{product},
+	}
+	body, _ := json.Marshal(request)
 	responseBody := bytes.NewBuffer(body)
 
 	return responseBody
@@ -46,7 +52,7 @@ func ConvertProductToUpdateProductRequest(pm *model.ProductMessage) *bytes.Buffe
 
 func ConvertProductToDeleteProductRequest(pm *model.ProductMessage) *bytes.Buffer {
 	product := model.DeleteProductRequest{
-		ProductID: []int{pm.TokopediaID},
+		ProductID: []int{pm.TokopediaProductID},
 	}
 	body, _ := json.Marshal(product)
 	responseBody := bytes.NewBuffer(body)
