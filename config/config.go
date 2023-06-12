@@ -8,7 +8,7 @@ type Config struct {
 	KafkaHost                 string `envconfig:"KAFKA_HOST" default:"localhost"`
 	KafkaPort                 string `envconfig:"KAFKA_PORT" default:"9092"`
 	KafkaProductTopic         string `envconfig:"KAFKA_PRODUCT_TOPIC" default:"product"`
-	KafkaProductConsumerGroup string `envconfig:"KAFKA_PRODUCT_CONSUMER_GROUP" default:"product-consumer-group"`
+	KafkaProductConsumerGroup string `envconfig:"KAFKA_PRODUCT_CONSUMER_GROUP" default:"tokopedia-product-consumer-group"`
 
 	TokopediaURL   string `envconfig:"TOKOPEDIA_URL" default:"https://a1384ac0-a120-47f2-a5c3-f518085745c0.mock.pstmn.io/v3/products/"`
 	OmnichannelURL string `envconfig:"OMNICHANNEL_URL" default:"http://localhost:8080/api/v1/product/marketplace/"`
