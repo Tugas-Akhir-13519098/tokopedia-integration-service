@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"net/http"
+	"tokopedia-integration-service/config"
 	"tokopedia-integration-service/src/model"
 
 	"github.com/hashicorp/go-retryablehttp"
@@ -11,7 +12,10 @@ import (
 
 func SendPostRequest(body *bytes.Buffer, url string) (*http.Response, error) {
 	retryClient := NewRetryClient()
-	resp, err := retryClient.Post(url, "application/json", body)
+	req, _ := retryablehttp.NewRequest("POST", url, body)
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer "+config.Get().AdminToken)
+	resp, err := retryClient.Do(req)
 
 	if err != nil {
 		return nil, err
@@ -24,6 +28,7 @@ func SendPatchRequest(body *bytes.Buffer, url string) (*http.Response, error) {
 	retryClient := NewRetryClient()
 	req, _ := retryablehttp.NewRequest("PATCH", url, body)
 	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer "+config.Get().AdminToken)
 	resp, err := retryClient.Do(req)
 
 	if err != nil {
@@ -37,6 +42,7 @@ func SendPutRequest(body *bytes.Buffer, url string) (*http.Response, error) {
 	retryClient := NewRetryClient()
 	req, _ := retryablehttp.NewRequest("PUT", url, body)
 	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer "+config.Get().AdminToken)
 	resp, err := retryClient.Do(req)
 
 	if err != nil {

@@ -12,6 +12,7 @@ type Config struct {
 
 	TokopediaURL   string `envconfig:"TOKOPEDIA_URL" default:"https://a1384ac0-a120-47f2-a5c3-f518085745c0.mock.pstmn.io/v3/products/"`
 	OmnichannelURL string `envconfig:"OMNICHANNEL_URL" default:"http://localhost:8080/api/v1/product/marketplace/"`
+	AdminToken     string `envconfig:"ADMIN_TOKEN" default:""`
 }
 
 // Get to get defined configuration
