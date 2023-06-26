@@ -7,7 +7,7 @@ import (
 	"tokopedia-integration-service/src/model"
 )
 
-func ConvertProductToCreateProductRequest(pm *model.ProductMessage) *bytes.Buffer {
+func ConvertProductToCreateProductRequest(pm *model.KafkaProductMessage) *bytes.Buffer {
 	product := model.CreateProductRequest{
 		Name:          pm.Name,
 		CategoryId:    1,
@@ -31,7 +31,7 @@ func ConvertProductToCreateProductRequest(pm *model.ProductMessage) *bytes.Buffe
 	return responseBody
 }
 
-func ConvertProductToUpdateProductRequest(pm *model.ProductMessage) *bytes.Buffer {
+func ConvertProductToUpdateProductRequest(pm *model.KafkaProductMessage) *bytes.Buffer {
 	product := model.UpdateProductRequest{
 		ID:          pm.TokopediaProductID,
 		Name:        pm.Name,
@@ -50,7 +50,7 @@ func ConvertProductToUpdateProductRequest(pm *model.ProductMessage) *bytes.Buffe
 	return responseBody
 }
 
-func ConvertProductToDeleteProductRequest(pm *model.ProductMessage) *bytes.Buffer {
+func ConvertProductToDeleteProductRequest(pm *model.KafkaProductMessage) *bytes.Buffer {
 	product := model.DeleteProductRequest{
 		ProductID: []int{pm.TokopediaProductID},
 	}
@@ -76,4 +76,18 @@ func ConvertProductIdToUpdateProductIdRequest(productID int) *bytes.Buffer {
 	responseBody := bytes.NewBuffer(body)
 
 	return responseBody
+}
+
+func ConvertToErrorMessage(method string, url string, req string, err string, status string, reqTime string) []byte {
+	message := model.KafkaErrorMessage{
+		Method:      method,
+		Url:         url,
+		RequestBody: req,
+		Error:       err,
+		Status:      status,
+		RequestTime: reqTime,
+	}
+	messageByte, _ := json.Marshal(message)
+
+	return messageByte
 }

@@ -40,7 +40,7 @@ func (ps *productService) ConsumeProductMessages() {
 		}
 
 		// Change kafka message from byte to struct
-		var productMessage *model.ProductMessage
+		var productMessage *model.KafkaProductMessage
 		err = json.Unmarshal(msg.Value, &productMessage)
 		if err != nil {
 			fmt.Println("Can't unmarshal the kafka message")
@@ -49,21 +49,21 @@ func (ps *productService) ConsumeProductMessages() {
 
 		if productMessage.Method == model.CREATE {
 			createProductBody := util.ConvertProductToCreateProductRequest(productMessage)
-			url := cfg.TokopediaURL + "fs/1/create?shop_id=1"
-			resp, _ := util.SendPostRequest(createProductBody, url)
-			util.AfterHTTPRequestHandler(resp, "CREATE", productMessage.ID, cfg.OmnichannelURL)
+			url := cfg.TokopediaURL + fmt.Sprintf("fs/%d/create?shop_id=%d", productMessage.TokopediaFsID, productMessage.TokopediaShopID)
+			resp, _ := util.SendPostRequest(createProductBody, url, productMessage.TokopediaBearerToken)
+			util.AfterHTTPRequestHandler(createProductBody.String(), resp, "CREATE", "POST", productMessage.ID)
 
 		} else if productMessage.Method == model.UPDATE {
 			updateProductBody := util.ConvertProductToUpdateProductRequest(productMessage)
-			url := cfg.TokopediaURL + "fs/1/edit?shop_id=1"
-			resp, _ := util.SendPatchRequest(updateProductBody, url)
-			util.AfterHTTPRequestHandler(resp, "UPDATE", string(msg.Key), cfg.OmnichannelURL)
+			url := cfg.TokopediaURL + fmt.Sprintf("fs/%d/edit?shop_id=%d", productMessage.TokopediaFsID, productMessage.TokopediaShopID)
+			resp, _ := util.SendPatchRequest(updateProductBody, url, productMessage.TokopediaBearerToken)
+			util.AfterHTTPRequestHandler(updateProductBody.String(), resp, "UPDATE", "PATCH", string(msg.Key))
 
 		} else { // productMessage.Method == model.DELETE
 			deleteProductBody := util.ConvertProductToDeleteProductRequest(productMessage)
-			url := cfg.TokopediaURL + "fs/1/delete?shop_id=1"
-			resp, _ := util.SendPostRequest(deleteProductBody, url)
-			util.AfterHTTPRequestHandler(resp, "DELETE", string(msg.Key), cfg.OmnichannelURL)
+			url := cfg.TokopediaURL + fmt.Sprintf("fs/%d/delete?shop_id=%d", productMessage.TokopediaFsID, productMessage.TokopediaShopID)
+			resp, _ := util.SendPostRequest(deleteProductBody, url, productMessage.TokopediaBearerToken)
+			util.AfterHTTPRequestHandler(deleteProductBody.String(), resp, "DELETE", "POST", string(msg.Key))
 		}
 	}
 }
