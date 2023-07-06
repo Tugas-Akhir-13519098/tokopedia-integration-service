@@ -109,14 +109,14 @@ func NewRetryClient() *retryablehttp.Client {
 	return retryClient
 }
 
-func AfterHTTPRequestHandler(req string, resp *http.Response, method string, httpMethod string, productID string) {
+func AfterHTTPRequestHandler(req string, resp *http.Response, method string, httpMethod string, productID string, url string) {
 	productResponse := ConvertResponseToProductResponse(resp.Body)
 	IsFailResponse, failDataRow := IsFailResponse(resp, productResponse)
 	cfg := config.Get()
 
 	if IsFailResponse {
 		fmt.Printf("Failed to send HTTP %s Request with status: %s and error: %s\n", httpMethod, resp.Status, failDataRow)
-		kafkaMessage := ConvertToErrorMessage(httpMethod, cfg.TokopediaURL, req, failDataRow, resp.Status, time.Now().Format("2006-01-02 15:04:05"))
+		kafkaMessage := ConvertToErrorMessage(httpMethod, url, req, failDataRow, resp.Status, time.Now().Format("2006-01-02 15:04:05"))
 
 		// Publish to Kafka Error Topic
 		config := kafka.WriterConfig{

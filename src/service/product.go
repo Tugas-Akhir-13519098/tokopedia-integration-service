@@ -51,19 +51,19 @@ func (ps *productService) ConsumeProductMessages() {
 			createProductBody := util.ConvertProductToCreateProductRequest(productMessage)
 			url := cfg.TokopediaURL + fmt.Sprintf("fs/%d/create?shop_id=%d", productMessage.TokopediaFsID, productMessage.TokopediaShopID)
 			resp, _ := util.SendPostRequest(createProductBody, url, productMessage.TokopediaBearerToken)
-			util.AfterHTTPRequestHandler(createProductBody.String(), resp, "CREATE", "POST", productMessage.ID)
+			util.AfterHTTPRequestHandler(createProductBody.String(), resp, "CREATE", "POST", productMessage.ID, url)
 
 		} else if productMessage.Method == model.UPDATE {
 			updateProductBody := util.ConvertProductToUpdateProductRequest(productMessage)
 			url := cfg.TokopediaURL + fmt.Sprintf("fs/%d/edit?shop_id=%d", productMessage.TokopediaFsID, productMessage.TokopediaShopID)
 			resp, _ := util.SendPatchRequest(updateProductBody, url, productMessage.TokopediaBearerToken)
-			util.AfterHTTPRequestHandler(updateProductBody.String(), resp, "UPDATE", "PATCH", string(msg.Key))
+			util.AfterHTTPRequestHandler(updateProductBody.String(), resp, "UPDATE", "PATCH", string(msg.Key), url)
 
 		} else { // productMessage.Method == model.DELETE
 			deleteProductBody := util.ConvertProductToDeleteProductRequest(productMessage)
 			url := cfg.TokopediaURL + fmt.Sprintf("fs/%d/delete?shop_id=%d", productMessage.TokopediaFsID, productMessage.TokopediaShopID)
 			resp, _ := util.SendPostRequest(deleteProductBody, url, productMessage.TokopediaBearerToken)
-			util.AfterHTTPRequestHandler(deleteProductBody.String(), resp, "DELETE", "POST", string(msg.Key))
+			util.AfterHTTPRequestHandler(deleteProductBody.String(), resp, "DELETE", "POST", string(msg.Key), url)
 		}
 	}
 }
